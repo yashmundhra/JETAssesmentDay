@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Finder - JET Assessment Days</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #FF8000;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        input {
+            padding: 8px 12px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #FF8000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #E67300;
+        }
+
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+        #loading {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .restaurant {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .restaurant h3 {
+            margin-bottom: 5px;
+        }
+
+        .restaurant .rating {
+            color: #FF8000;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .restaurant .cuisines {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .restaurant .address {
+            font-size: 14px;
+            color: #333;
+        }
+
+        #no-results {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<h1>Restaurant Finder - JET Assessment Days</h1>
+
+<div class="search-container">
+    <form id="search-form">
+        <input type="text" id="postcode" placeholder="Enter postcode" required>
+        <button type="submit">Search</button>
+    </form>
+    <div id="error-message"></div>
+</div>
+
+<div id="loading">Loading restaurants...</div>
+
+<div id="results-container"></div>
+
+<div id="no-results">No restaurants found for this postcode.</div>
+
+<script>
+    // API endpoint (Spring Boot backend)
+    const API_URL = 'http://localhost:8080/api/restaurants';
+
+    // DOM elements
+    const searchForm = document.getElementById('search-form');
+    const postcodeInput = document.getElementById('postcode');
+    const errorMessage = document.getElementById('error-message');
+    const resultsContainer = document.getElementById('results-container');
+    const loadingElement = document.getElementById('loading');
+    const noResultsElement = document.getElementById('no-results');
+
+    // Handle form submission
+    searchForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const postcode = postcodeInput.value.trim();
+
+        if (!postcode) {
+            errorMessage.textContent = 'Please enter a postcode';
+            return;
+        }
+
+        // Clear previous results and show loading state
+        resultsContainer.innerHTML = '';
+        loadingElement.style.display = 'block';
+        noResultsElement.style.display = 'none';
+        errorMessage.textContent = '';
+
+        try {
+            // Call the Spring Boot backend
+            const response = await fetch(`${API_URL}?postcode=${encodeURIComponent(postcode)}`);
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const restaurants = await response.json();
+
+            // Hide loading state
+            loadingElement.style.display = 'none';
+
+            // Display results
+            if (restaurants.length > 0) {
+                displayRestaurants(restaurants);
+            } else {
+                noResultsElement.style.display = 'block';
+            }
+        } catch (err) {
+            console.error(err);
+            loadingElement.style.display = 'none';
+            errorMessage.textContent = 'Failed to fetch restaurant data. Please try again.';
+        }
+    });
+
+    // Display restaurants in a simple list
+    function displayRestaurants(restaurants) {
+        restaurants.forEach(restaurant => {
+            const restaurantElement = document.createElement('div');
+            restaurantElement.className = 'restaurant';
+
+            restaurantElement.innerHTML = `
+                    <h3>${restaurant.name}</h3>
+                    <div class="rating">Rating: ${restaurant.rating.toFixed(1)}</div>
+                    <div class="cuisines">Cuisines: ${restaurant.cuisines.join(', ')}</div>
+                    <div class="address">Address: ${restaurant.address}</div>
+                `;
+
+            resultsContainer.appendChild(restaurantElement);
+        });
+    }
+</script>
+</body>
+</html>
