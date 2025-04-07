@@ -28,9 +28,6 @@ RestaurantFinderJET/
 │   └── test/
 │       └── java/
 │           └── com/
-│               └── example/
-│                   └── restaurantfinderjet/
-│                       └── RestaurantFinderJetApplicationTests.java
 ├── .gitattributes
 ├── .gitignore
 ├── mvnw                        # Maven wrapper script (Unix)
