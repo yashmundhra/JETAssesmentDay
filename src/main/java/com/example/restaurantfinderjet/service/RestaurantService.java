@@ -47,7 +47,8 @@ public class RestaurantService {
                     List<String> cuisines = new ArrayList<>();
                     JsonNode cuisinesNode = restaurantNode.path("cuisines");
                     if (cuisinesNode.isArray()) {
-                        for (JsonNode cuisine : cuisinesNode) {
+                        for (int j = 0; j < Integer.min(2, cuisinesNode.size()); j++) {
+                            JsonNode cuisine = cuisinesNode.get(j);
                             cuisines.add(cuisine.path("name").asText("Unknown"));
                         }
                     }

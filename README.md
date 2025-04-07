@@ -50,26 +50,15 @@ RestaurantFinderJET/
 
 ### Backend (Spring Boot)
 
-1. **Configure the API URL:**
+**Build and run the application:**
 
-   Open `src/main/resources/application.properties` and set your restaurant API URL:
-
-   ```properties
-   restaurant.api.url=YOUR_RESTAURANT_API_URL_HERE
-
-2. **Build and run the application:**
-
-    ```shellscript
-    # From the root directory (where pom.xml is located)
-    
-    # Using Maven wrapper
-    ./mvnw clean package
-    java -jar target/restaurant-api-0.0.1-SNAPSHOT.jar
-    
-    # OR run directly with Spring Boot
-    ./mvnw spring-boot:run
-    ```
-    The backend will start on [http://localhost:8080](http://localhost:8080)
+  ```shellscript
+  # From the root directory (where pom.xml is located)
+  
+  # Run directly with Spring Boot
+  ./mvnw spring-boot:run
+  ```
+The backend will start on [http://localhost:8080](http://localhost:8080)
 
 ### Frontend (HTML)
 
@@ -93,3 +82,44 @@ Then access the frontend at [http://localhost:3000](http://localhost:3000)
 ## API Endpoints
 
 - `GET /api/restaurants?postcode={postcode}` - Returns restaurants that deliver to the specified postcode
+
+## Assumptions
+
+- The definition of "cuisine" is not specified. The cuisine array also consists of other names such as "Deals", "Local Legends" etc. It was observed that in most scenarios the first two names in the array are real "cuisines" so it was chosen to only display the first two names.
+- Assumed that address is constructed by combining firstLine and postalCode and city
+- It is assumed that the Just Eat API will always return completed data and will always return data in the same format. Each restaurant object contains at least a name, cuisines (array), rating (number) and address field.
+- It is assumed that port 8080 and 3000 are available for the frontend and backend services.
+
+## Potential Improvements
+
+### Feature-Specific Improvements
+
+- **Restaurant Filtering and Sorting:**
+  * **Filtering Options:** Allow users to filter restaurants by cuisine type, rating, distance and other fields
+  * **Sorting Options:** Sort restaurants by proximity to the user, rating etc.
+
+
+- **Restaurant Information Display:**
+  - **Opening Hours:** Display whether a restaurant is open for delivery or not
+  - **Special Offers:** Highlight restaurants with current promotions
+
+
+- **User Experience Improvements:**
+  - **Restaurant Comparison:** Allow selecting multiple restaurants to compare
+  - **Favorites System:** Let users save favorite restaurants
+  - **Accessibility Features:** Ensure the application is accessible to all users
+
+
+- **Integration Possibilities:**
+  - **Maps Integration:** Show restaurant locations on a map
+  - **Loyalty Programs:** Integrate with restaurant loyalty programs
+  - **Notification System:** Alert users about order status or special offers
+
+
+### Backend Improvements
+
+* Add pagination for large result sets
+* Add unit tests for service and controller layers, add integration tests for API endpoints
+* Implement test coverage reporting
+* Add Swagger/OpenAPI documentation. Improve code comments and documentation
+* Improve error handling with appropriate HTTP status codes and responses on the frontend
